@@ -1,0 +1,8 @@
+{
+  "date": "2026-06-29",
+  "title": "个人数字花园发布",
+  "description": "基于 Astro v5、Tailwind CSS v4 与动态加载架构设计并部署上线了本站。",
+  "category": "project",
+  "order": 1,
+  "lang": "zh"
+}

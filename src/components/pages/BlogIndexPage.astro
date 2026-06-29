@@ -1,0 +1,95 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../PageHeader.astro';
+import Card from '../Card.astro';
+
+interface Props {
+  lang: 'zh' | 'en';
+}
+
+const { lang } = Astro.props;
+
+// Fetch and sort posts
+const posts = await getCollection('blog');
+const sortedPosts = posts.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const allTags = [...new Set(posts.flatMap(post => post.data.tags))];
+
+const getBlogPath = (id: string) => {
+  return lang === 'en' ? `/en/blog/${id}` : `/blog/${id}`;
+};
+
+const getTagPath = (tag: string) => {
+  return lang === 'en' ? `/en/tags/${tag}` : `/tags/${tag}`;
+};
+---
+
+<BaseLayout title={lang === 'zh' ? "文章列表 | Jim's Blog" : "Articles List | Jim's Blog"}>
+  <PageHeader />
+
+  <section class="py-12 space-y-12">
+    <!-- Header -->
+    <div class="space-y-4 border-b border-border-custom/50 pb-8">
+      <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-text-primary">
+        {lang === 'zh' ? '文章与归档' : 'Articles & Archive'}
+      </h1>
+      <p class="text-sm md:text-base text-text-secondary leading-relaxed max-w-3xl">
+        {lang === 'zh' 
+          ? '技术研究、配置小抄、以及一些日常心得的公开存档。' 
+          : 'Thoughts, technical investigations, cheat sheets, and digital archives.'}
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Tag Filters Sidebar -->
+      <div class="lg:col-span-3 space-y-6">
+        <h2 class="text-xs font-bold text-text-primary uppercase tracking-wider font-mono">
+          {lang === 'zh' ? '按标签过滤' : 'Filter by Tag'}
+        </h2>
+        <div class="flex flex-wrap lg:flex-col gap-2">
+          <a 
+            href={lang === 'en' ? '/en/blog' : '/blog'} 
+            class="px-3 py-1.5 text-xs font-mono bg-primary/10 border border-primary/30 text-primary rounded-md transition-all hover:bg-primary/20"
+          >
+            #all ({posts.length})
+          </a>
+          {allTags.map(tag => {
+            const count = posts.filter(p => p.data.tags.includes(tag)).length;
+            return (
+              <a 
+                href={getTagPath(tag)}
+                class="px-3 py-1.5 text-xs font-mono bg-bg-surface border border-border-custom text-text-secondary rounded-md transition-all hover:border-primary/50 hover:text-primary"
+              >
+                #{tag} ({count})
+              </a>
+            );
+          })}
+        </div>
+      </div>
+
+      <!-- Articles list -->
+      <div class="lg:col-span-9 space-y-6">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xs font-bold text-text-secondary uppercase tracking-wider font-mono">
+            {lang === 'zh' ? `共 ${sortedPosts.length} 篇文章` : `Showing ${sortedPosts.length} articles`}
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {sortedPosts.map(post => (
+            <Card 
+              title={post.data.title}
+              description={post.data.description}
+              href={getBlogPath(post.id)}
+              date={new Date(post.data.pubDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+              tags={post.data.tags}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

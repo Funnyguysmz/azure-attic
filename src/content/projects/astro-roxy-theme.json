@@ -1,0 +1,10 @@
+{
+  "name": "Astro Roxy Theme",
+  "description": "一个极简的 Astro 个人博客主题，融入了旅行法师冰蓝色二次元色彩美学。",
+  "techStack": ["Astro", "TailwindCSS", "TypeScript"],
+  "github": "https://github.com/example/astro-roxy-theme",
+  "demo": "https://example.com/roxy-theme",
+  "featured": true,
+  "order": 1,
+  "lang": "zh"
+}

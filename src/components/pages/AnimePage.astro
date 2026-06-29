@@ -1,0 +1,98 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../PageHeader.astro';
+
+interface Props {
+  lang: 'zh' | 'en';
+}
+
+const { lang } = Astro.props;
+
+const animeList = await getCollection('anime');
+const sortedAnime = animeList.sort((a, b) => {
+  const dateA = a.data.watchDate ? new Date(a.data.watchDate).getTime() : 0;
+  const dateB = b.data.watchDate ? new Date(b.data.watchDate).getTime() : 0;
+  return dateB - dateA;
+});
+
+const statusLabels = {
+  watching: 'border-yellow-500/35 text-yellow-400 bg-yellow-500/5',
+  completed: 'border-green-500/35 text-green-400 bg-green-500/5',
+  'on-hold': 'border-purple-500/35 text-purple-400 bg-purple-500/5',
+  'plan-to-watch': 'border-blue-500/35 text-blue-400 bg-blue-500/5',
+};
+---
+
+<BaseLayout title={lang === 'zh' ? "兴趣探索 | Jim's Blog" : "Anime Logs | Jim's Blog"}>
+  <PageHeader />
+
+  <section class="py-12 space-y-12">
+    <!-- Header -->
+    <div class="space-y-4 border-b border-border-custom/50 pb-8">
+      <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-text-primary">
+        {lang === 'zh' ? '追番记录 & 二次元' : 'Anime Logs & Hobbies'}
+      </h1>
+      <p class="text-sm md:text-base text-text-secondary leading-relaxed max-w-3xl">
+        {lang === 'zh' 
+          ? '记录一些触动心灵的动画与音乐推荐。旅行法师的避风港。' 
+          : 'A quiet traveler\'s shelter. Visual logs of animations, stories, and journeys that left a spark.'}
+      </p>
+    </div>
+
+    <!-- Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {sortedAnime.map((item) => (
+        <div class="flex flex-col md:flex-row gap-6 p-6 rounded-lg border border-border-custom bg-bg-surface hover:border-primary/45 transition-colors relative overflow-hidden">
+          {item.data.image ? (
+            <div class="w-full md:w-32 h-44 rounded-md overflow-hidden bg-bg-main border border-border-custom/50 flex-shrink-0">
+              <img 
+                src={item.data.image} 
+                alt={item.data.title}
+                class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                loading="lazy"
+              />
+            </div>
+          ) : (
+            <div class="w-full md:w-32 h-44 rounded-md bg-bg-main border border-border-custom flex items-center justify-center text-3xl flex-shrink-0 text-text-secondary select-none">
+              🔮
+            </div>
+          )}
+
+          <div class="flex-grow flex flex-col justify-between space-y-4">
+            <div class="space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span class={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase rounded border ${statusLabels[item.data.status] || statusLabels.completed}`}>
+                  {item.data.status}
+                </span>
+                
+                <div class="flex items-center text-yellow-500/80 text-xs">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span class={i < item.data.rating ? "text-yellow-400" : "text-text-secondary/20"}>★</span>
+                  ))}
+                </div>
+              </div>
+
+              <h3 class="text-base font-bold text-text-primary font-sans leading-snug">
+                {item.data.title}
+              </h3>
+
+              {item.data.comment && (
+                <p class="text-xs text-text-secondary leading-relaxed line-clamp-4">
+                  {item.data.comment}
+                </p>
+              )}
+            </div>
+
+            {item.data.watchDate && (
+              <div class="text-[10px] font-mono text-text-secondary border-t border-border-custom/30 pt-2 flex justify-between">
+                <span>Log Date:</span>
+                <span>{new Date(item.data.watchDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

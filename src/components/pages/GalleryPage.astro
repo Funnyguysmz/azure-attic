@@ -1,0 +1,75 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../PageHeader.astro';
+
+interface Props {
+  lang: 'zh' | 'en';
+}
+
+const { lang } = Astro.props;
+
+import travelerWallImg from '../../assets/images/traveler_wall.jpg';
+import magicCircleImg from '../../assets/images/magic_circle.jpg';
+
+const galleryItems = [
+  {
+    src: travelerWallImg,
+    title: lang === 'zh' ? '星空下的漫步' : 'The Starry Expedition',
+    description: lang === 'zh' 
+      ? '法师凝视着远处的星云，在这寒冷的长夜中寻找古老法术的公式。' 
+      : 'A quiet traveler looking at the distant magical spiral galaxy, seeking coding grimoires.',
+  },
+  {
+    src: magicCircleImg,
+    title: lang === 'zh' ? '古老法阵的辉光' : 'Magic Circle Activation',
+    description: lang === 'zh' 
+      ? '青蓝色光芒在石砖地板上回旋、闪耀，凝聚出前端构建的能量。' 
+      : 'Ice-blue magic circle active on ancient stone floor, channeling frontend energy.',
+  },
+];
+---
+
+<BaseLayout title={lang === 'zh' ? "视觉画廊 | Jim's Blog" : "Visual Gallery | Jim's Blog"}>
+  <PageHeader />
+
+  <section class="py-12 space-y-12">
+    <!-- Header -->
+    <div class="space-y-4 border-b border-border-custom/50 pb-8">
+      <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-text-primary">
+        {lang === 'zh' ? '视觉画廊' : 'Visual Gallery'}
+      </h1>
+      <p class="text-sm md:text-base text-text-secondary leading-relaxed max-w-3xl">
+        {lang === 'zh' 
+          ? '个人二次元插画收集、壁纸以及一些设计草图。全自动格式优化与懒加载。' 
+          : 'A collection of custom graphic illustrations, wallpapers, and aesthetic coordinates.'}
+      </p>
+    </div>
+
+    <!-- Grid -->
+    <div class="columns-1 md:columns-2 gap-6 space-y-6">
+      {galleryItems.map((item) => (
+        <div class="break-inside-avoid block rounded-lg border border-border-custom bg-bg-surface overflow-hidden hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 group">
+          <div class="overflow-hidden bg-bg-main">
+            <Image 
+              src={item.src} 
+              alt={item.title}
+              class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              widths={[240, 540, 720, travelerWallImg.width]}
+              sizes={`(max-width: 768px) 100vw, 50vw`}
+              loading="lazy"
+            />
+          </div>
+          <div class="p-5 border-t border-border-custom/50 space-y-1.5">
+            <h3 class="text-sm font-bold text-text-primary group-hover:text-primary transition-colors font-mono">
+              {item.title}
+            </h3>
+            <p class="text-xs text-text-secondary leading-relaxed">
+              {item.description}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

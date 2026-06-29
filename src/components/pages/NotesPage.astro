@@ -1,0 +1,67 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../PageHeader.astro';
+
+interface Props {
+  lang: 'zh' | 'en';
+}
+
+const { lang } = Astro.props;
+
+const notes = await getCollection('notes');
+const sortedNotes = notes.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const renderedNotes = await Promise.all(
+  sortedNotes.map(async (note) => {
+    const { Content } = await render(note);
+    return { note, Content };
+  })
+);
+---
+
+<BaseLayout title={lang === 'zh' ? "随笔记录 | Jim's Blog" : "Daily Notes | Jim's Blog"}>
+  <PageHeader />
+
+  <section class="py-12 space-y-12">
+    <!-- Header -->
+    <div class="space-y-4 border-b border-border-custom/50 pb-8">
+      <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-text-primary">
+        {lang === 'zh' ? '随笔与小抄' : 'Notes & Snippets'}
+      </h1>
+      <p class="text-sm md:text-base text-text-secondary leading-relaxed max-w-3xl">
+        {lang === 'zh' 
+          ? '碎碎念、技术快捷小抄、开发避坑指南与踩坑记录。即写即发，免去繁琐排版。' 
+          : 'A collection of quick thoughts, code snippets, shortcuts, and troubleshooting logs.'}
+      </p>
+    </div>
+
+    <!-- Notes list -->
+    <div class="max-w-3xl mx-auto space-y-8">
+      {renderedNotes.map(({ note, Content }) => (
+        <div class="p-6 rounded-lg border border-border-custom bg-bg-surface hover:border-primary/30 transition-colors space-y-4">
+          <div class="flex items-center justify-between border-b border-border-custom/50 pb-3">
+            <h2 class="text-base font-bold text-text-primary font-mono">{note.data.title}</h2>
+            <time class="text-xs font-mono text-text-secondary">
+              {new Date(note.data.pubDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+            </time>
+          </div>
+
+          <div class="prose prose-slate dark:prose-invert max-w-none text-xs md:text-sm text-text-secondary space-y-3 leading-relaxed">
+            <Content />
+          </div>
+
+          {note.data.tags.length > 0 && (
+            <div class="flex gap-2 pt-2 border-t border-border-custom/30 text-[10px] font-mono text-text-secondary">
+              {note.data.tags.map(tag => (
+                <span>#{tag}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

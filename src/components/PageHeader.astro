@@ -1,0 +1,107 @@
+---
+import { getLocale } from '../utils/i18n';
+const pathname = Astro.url.pathname;
+const lang = getLocale(pathname);
+---
+
+<div class="flex items-center justify-end space-x-4 select-none mb-6 relative z-30">
+  <span class="inline-flex items-center space-x-1.5 text-[10px] font-mono font-bold tracking-wider text-accent">
+    <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span>
+    <span>ONLINE</span>
+  </span>
+  
+  <!-- Language Toggle -->
+  <button 
+    id="lang-toggle-page" 
+    class="text-[10px] font-mono font-bold text-text-secondary hover:text-primary transition-colors cursor-pointer border border-border-custom bg-bg-surface px-2 py-1 rounded"
+    data-pathname={pathname}
+    data-target-lang={lang === 'zh' ? 'en' : 'zh'}
+  >
+    {lang === 'zh' ? 'ENGLISH (EN)' : '中文 (ZH)'}
+  </button>
+
+  <!-- Theme Toggle -->
+  <button 
+    id="theme-toggle-page" 
+    class="text-text-secondary hover:text-primary transition-colors cursor-pointer p-1.5 rounded border border-border-custom bg-bg-surface"
+    aria-label="Toggle theme"
+  >
+    <!-- Moon icon -->
+    <svg id="theme-toggle-dark-icon-page" class="hidden w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+      <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+    </svg>
+    <!-- Sun icon -->
+    <svg id="theme-toggle-light-icon-page" class="hidden w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+      <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" />
+    </svg>
+  </button>
+</div>
+
+<script>
+  function setupPageHeaderScript() {
+    const langBtn = document.getElementById('lang-toggle-page');
+    if (langBtn) {
+      // Clear event listeners before re-binding to prevent multi-fires during ClientRouter swaps
+      const newLangBtn = langBtn.cloneNode(true) as HTMLButtonElement;
+      langBtn.parentNode?.replaceChild(newLangBtn, langBtn);
+      
+      newLangBtn.addEventListener('click', () => {
+        const pathname = newLangBtn.getAttribute('data-pathname') || '/';
+        const targetLang = newLangBtn.getAttribute('data-target-lang') || 'zh';
+        
+        let targetPath = '/';
+        if (targetLang === 'en') {
+          targetPath = pathname === '/' ? '/en' : `/en${pathname}`;
+        } else {
+          targetPath = pathname.replace(/^\/en/, '') || '/';
+        }
+        
+        window.location.pathname = targetPath;
+      });
+    }
+
+    const themeBtn = document.getElementById('theme-toggle-page');
+    if (themeBtn) {
+      const newThemeBtn = themeBtn.cloneNode(true) as HTMLButtonElement;
+      themeBtn.parentNode?.replaceChild(newThemeBtn, themeBtn);
+      
+      const darkIcon = newThemeBtn.querySelector('#theme-toggle-dark-icon-page');
+      const lightIcon = newThemeBtn.querySelector('#theme-toggle-light-icon-page');
+
+      if (document.documentElement.classList.contains('light')) {
+        darkIcon?.classList.remove('hidden');
+        lightIcon?.classList.add('hidden');
+      } else {
+        lightIcon?.classList.remove('hidden');
+        darkIcon?.classList.add('hidden');
+      }
+
+      newThemeBtn.addEventListener('click', () => {
+        darkIcon?.classList.toggle('hidden');
+        lightIcon?.classList.toggle('hidden');
+
+        if (document.documentElement.classList.contains('light')) {
+          document.documentElement.classList.remove('light');
+          localStorage.setItem('color-theme', 'dark');
+        } else {
+          document.documentElement.classList.add('light');
+          localStorage.setItem('color-theme', 'light');
+        }
+        
+        const iframe = document.querySelector('iframe.giscus-frame') as HTMLIFrameElement | null;
+        if (iframe) {
+          const theme = document.documentElement.classList.contains('light') ? 'light' : 'transparent_dark';
+          iframe.contentWindow?.postMessage(
+            { giscus: { setConfig: { theme } } },
+            'https://giscus.app'
+          );
+        }
+      });
+    }
+  }
+
+  // Bind on load
+  setupPageHeaderScript();
+  // Bind again on ViewTransitions swap
+  document.addEventListener('astro:after-swap', setupPageHeaderScript);
+</script>

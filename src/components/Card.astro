@@ -1,0 +1,54 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  href: string;
+  tags?: string[];
+  date?: string;
+  badge?: string;
+}
+
+const { title, description, href, tags = [], date, badge } = Astro.props;
+---
+
+<a 
+  href={href} 
+  class="group block relative p-6 rounded-lg border border-border-custom bg-bg-surface hover:border-primary/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5"
+>
+  <!-- Optional top right badge -->
+  {badge && (
+    <span class="absolute top-4 right-4 px-2 py-0.5 text-[10px] font-semibold font-mono tracking-wider uppercase text-accent bg-accent/10 rounded-full border border-accent/20">
+      {badge}
+    </span>
+  )}
+
+  <div class="space-y-3">
+    <!-- Date / Meta -->
+    {date && (
+      <time class="block text-xs font-mono text-text-secondary tracking-wider">
+        {date}
+      </time>
+    )}
+
+    <!-- Title -->
+    <h3 class="text-lg font-semibold text-text-primary group-hover:text-primary transition-colors duration-300 font-sans">
+      {title}
+    </h3>
+
+    <!-- Description -->
+    <p class="text-sm text-text-secondary line-clamp-2 leading-relaxed">
+      {description}
+    </p>
+
+    <!-- Tags -->
+    {tags.length > 0 && (
+      <div class="flex flex-wrap gap-1.5 pt-2">
+        {tags.map(tag => (
+          <span class="px-2 py-0.5 text-xs font-mono text-text-secondary bg-bg-main/60 rounded border border-border-custom group-hover:border-border-custom/80 transition-colors">
+            #{tag}
+          </span>
+        ))}
+      </div>
+    )}
+  </div>
+</a>

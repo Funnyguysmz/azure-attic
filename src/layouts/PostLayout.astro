@@ -1,0 +1,148 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import GiscusWrapper from '../components/GiscusWrapper.astro';
+import { getReadingTime } from '../utils/readingTime';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  tags: string[];
+  headings: Array<{ depth: number; slug: string; text: string }>;
+  body: string;
+}
+
+const { title, description, pubDate, tags, headings, body } = Astro.props;
+const readingTime = getReadingTime(body);
+
+const formattedDate = new Date(pubDate).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout title={`${title} | Roxy.dev`} description={description}>
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start py-8">
+    
+    <!-- Table of Contents Sidebar (Desktop only, left side or right side) -->
+    <aside class="hidden lg:block lg:col-span-3 sticky top-24 space-y-4">
+      <h2 class="text-xs font-bold text-text-primary uppercase tracking-wider font-mono">Table of Contents</h2>
+      <nav class="space-y-2 text-xs border-l border-border-custom/50 pl-3">
+        {headings.length > 0 ? (
+          headings.map(h => (
+            <a 
+              href={`#${h.slug}`} 
+              class={`block text-text-secondary hover:text-primary transition-colors py-0.5 ${h.depth === 3 ? 'pl-3 opacity-80' : 'font-medium'}`}
+            >
+              {h.text}
+            </a>
+          ))
+        ) : (
+          <span class="text-text-secondary italic">No subheadings</span>
+        )}
+      </nav>
+    </aside>
+
+    <!-- Main Article Body -->
+    <article class="lg:col-span-9 space-y-8">
+      <!-- Article Header -->
+      <header class="space-y-4 border-b border-border-custom/50 pb-6">
+        <time class="block text-xs font-mono text-text-secondary tracking-wider uppercase">
+          {formattedDate} &bull; {readingTime}
+        </time>
+        
+        <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-text-primary">
+          {title}
+        </h1>
+        
+        <div class="flex flex-wrap gap-1.5 pt-2">
+          {tags.map(tag => (
+            <a 
+              href={`/tags/${tag}`}
+              class="px-2 py-0.5 text-xs font-mono text-text-secondary hover:text-primary bg-bg-surface rounded border border-border-custom transition-all"
+            >
+              #{tag}
+            </a>
+          ))}
+        </div>
+      </header>
+
+      <!-- Rendered Content Container -->
+      <section class="prose prose-slate dark:prose-invert max-w-none text-sm md:text-base leading-relaxed text-text-secondary space-y-6">
+        <slot />
+      </section>
+
+      <!-- Giscus comments section -->
+      <GiscusWrapper />
+    </article>
+
+  </div>
+</BaseLayout>
+
+<style is:global>
+  /* Base Markdown styling rules to format parsed MDX inside post */
+  .prose h1, .prose h2, .prose h3, .prose h4 {
+    color: var(--text-primary);
+    font-weight: 700;
+    margin-top: 1.75em;
+    margin-bottom: 0.5em;
+  }
+  .prose h1 { font-size: 1.5em; }
+  .prose h2 { font-size: 1.35em; border-bottom: 1px solid rgba(30, 41, 59, 0.3); padding-bottom: 0.3em; }
+  .prose h3 { font-size: 1.2em; }
+  
+  .prose p {
+    margin-bottom: 1.25em;
+  }
+  .prose a {
+    color: var(--color-accent);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--color-accent);
+    transition: color 0.2s;
+  }
+  .prose a:hover {
+    color: var(--color-primary);
+    border-bottom-style: solid;
+  }
+  .prose ul, .prose ol {
+    margin-left: 1.5em;
+    margin-bottom: 1.25em;
+    list-style-type: disc;
+  }
+  .prose li {
+    margin-bottom: 0.5em;
+  }
+  .prose code {
+    background-color: var(--code-bg);
+    color: var(--color-secondary);
+    padding: 0.15em 0.3em;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    border: 1px solid var(--border-color);
+  }
+  .prose pre {
+    background-color: var(--code-bg) !important;
+    padding: 1.25em;
+    border-radius: 8px;
+    overflow-x: auto;
+    border: 1px solid var(--border-color);
+    margin-bottom: 1.5em;
+  }
+  .prose pre code {
+    background-color: transparent;
+    padding: 0;
+    border: none;
+    color: inherit;
+    font-size: 0.85em;
+  }
+  .prose blockquote {
+    border-left: 3px solid var(--color-primary);
+    padding-left: 1em;
+    margin-left: 0;
+    font-style: italic;
+    color: var(--text-secondary);
+    margin-bottom: 1.25em;
+  }
+</style>

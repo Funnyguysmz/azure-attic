@@ -1,0 +1,65 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="mt-auto border-t border-border-custom bg-bg-surface/50 text-text-secondary transition-colors duration-300">
+  <div class="mx-auto max-w-6xl px-4 py-12 md:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Brand & Silhouette -->
+      <div class="flex flex-col space-y-4">
+        <div class="flex items-center space-x-2 text-primary font-bold">
+          <span>🔮</span>
+          <span class="font-mono text-text-primary">Roxy.dev</span>
+        </div>
+        <p class="text-xs text-text-secondary leading-relaxed">
+          A personal digital garden & learning lab. Inspired by the path of a quiet traveler, seeking magic in engineering.
+        </p>
+        <!-- Traveler silhouette SVG (original, minimal design) -->
+        <div class="opacity-15 w-24 h-16 text-primary">
+          <svg viewBox="0 0 100 50" fill="currentColor" class="w-full h-full">
+            <!-- Traveler hat, staff, and road shape -->
+            <path d="M10 40 L90 40 M25 40 L30 25 L32 25 L35 40 M32 25 L31 15 L28 17 M31 15 L35 14 L32 25 M33 22 L45 10 M44 8 A2 2 0 1 1 47 11 Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none" />
+            <circle cx="80" cy="15" r="3" class="animate-pulse" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Links -->
+      <div class="flex flex-col space-y-3">
+        <h4 class="text-sm font-semibold text-text-primary uppercase tracking-wider font-mono">Navigate</h4>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <a href="/blog" class="hover:text-primary transition-colors">Blog</a>
+          <a href="/projects" class="hover:text-primary transition-colors">Projects</a>
+          <a href="/notes" class="hover:text-primary transition-colors">Notes</a>
+          <a href="/timeline" class="hover:text-primary transition-colors">Timeline</a>
+          <a href="/about" class="hover:text-primary transition-colors">About</a>
+          <a href="/lab" class="hover:text-primary transition-colors">Lab</a>
+        </div>
+      </div>
+
+      <!-- Social & Feeds -->
+      <div class="flex flex-col space-y-3">
+        <h4 class="text-sm font-semibold text-text-primary uppercase tracking-wider font-mono">Connect</h4>
+        <div class="flex space-x-4 text-xs">
+          <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors flex items-center space-x-1">
+            <span>GitHub</span>
+          </a>
+          <a href="/rss.xml" class="hover:text-primary transition-colors flex items-center space-x-1">
+            <span>RSS</span>
+          </a>
+          <a href="/sitemap-index.xml" class="hover:text-primary transition-colors flex items-center space-x-1">
+            <span>Sitemap</span>
+          </a>
+        </div>
+        <p class="text-[10px] text-text-secondary pt-2">
+          Built with Astro & Tailwind. Hosted on Cloudflare Pages.
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-8 pt-8 border-t border-border-custom/50 flex flex-col md:flex-row justify-between items-center text-xs">
+      <p>&copy; {currentYear} Roxy.dev. All rights reserved.</p>
+      <p class="mt-2 md:mt-0 font-mono text-[10px]">Coordinate: [35°40'N, 139°45'E]</p>
+    </div>
+  </div>
+</footer>

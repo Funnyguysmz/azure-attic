@@ -1,0 +1,68 @@
+---
+---
+
+<div class="mt-12 pt-8 border-t border-border-custom/50">
+  <h3 class="text-sm font-bold text-text-primary uppercase tracking-wider font-mono mb-6">🔮 Discussions &amp; Comments</h3>
+  
+  <!-- Giscus container -->
+  <div class="giscus-container bg-bg-surface/50 rounded-lg p-6 border border-border-custom">
+    <div id="giscus-placeholder" class="text-center py-6 space-y-3">
+      <div class="text-2xl">💬</div>
+      <p class="text-xs text-text-secondary max-w-md mx-auto leading-relaxed">
+        Giscus comments system is ready. To enable, configure your GitHub Repository discussions bindings in <code class="bg-bg-main px-1.5 py-0.5 rounded border border-border-custom">src/components/GiscusWrapper.astro</code>.
+      </p>
+    </div>
+    
+    <!-- Script will attach here once configured -->
+    <div id="giscus-comments"></div>
+  </div>
+</div>
+
+<script>
+  // Script to load Giscus dynamically based on current theme
+  function loadGiscus() {
+    const container = document.getElementById('giscus-comments');
+    if (!container) return;
+    
+    // Clear old scripts if any
+    container.innerHTML = '';
+    
+    const theme = document.documentElement.classList.contains('light') ? 'light' : 'transparent_dark';
+    
+    // Create script element
+    const script = document.createElement('script');
+    script.src = 'https://giscus.app/client.js';
+    script.setAttribute('data-repo', 'YOUR_GITHUB_REPO'); // Replace with your repo
+    script.setAttribute('data-repo-id', 'YOUR_REPO_ID'); // Replace with your repo ID
+    script.setAttribute('data-category', 'Announcements');
+    script.setAttribute('data-category-id', 'YOUR_CATEGORY_ID'); // Replace with your category ID
+    script.setAttribute('data-mapping', 'pathname');
+    script.setAttribute('data-strict', '0');
+    script.setAttribute('data-reactions-enabled', '1');
+    script.setAttribute('data-emit-metadata', '0');
+    script.setAttribute('data-input-position', 'bottom');
+    script.setAttribute('data-theme', theme);
+    script.setAttribute('data-lang', 'en');
+    script.setAttribute('crossorigin', 'anonymous');
+    script.async = true;
+    
+    // Append
+    container.appendChild(script);
+    
+    // Hide placeholder
+    const placeholder = document.getElementById('giscus-placeholder');
+    if (placeholder) {
+      // Keep placeholder showing in development/placeholder state
+      // If repo is configured, hide placeholder:
+      if (script.getAttribute('data-repo') !== 'YOUR_GITHUB_REPO') {
+        placeholder.classList.add('hidden');
+      }
+    }
+  }
+
+  // Load on initial load
+  loadGiscus();
+
+  // Reload when theme or view transitions change
+  document.addEventListener('astro:after-swap', loadGiscus);
+</script>

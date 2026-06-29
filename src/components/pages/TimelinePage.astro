@@ -1,0 +1,77 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../PageHeader.astro';
+
+interface Props {
+  lang: 'zh' | 'en';
+}
+
+const { lang } = Astro.props;
+
+const milestones = await getCollection('timeline');
+const sortedMilestones = milestones.sort((a, b) => {
+  const dateDiff = b.data.date.localeCompare(a.data.date);
+  if (dateDiff !== 0) return dateDiff;
+  return (b.data.order ?? 0) - (a.data.order ?? 0);
+});
+
+const categoryColors = {
+  life: 'border-green-500/35 text-green-400 bg-green-500/5',
+  code: 'border-blue-500/35 text-blue-400 bg-blue-500/5',
+  study: 'border-yellow-500/35 text-yellow-400 bg-yellow-500/5',
+  project: 'border-purple-500/35 text-purple-400 bg-purple-500/5',
+};
+---
+
+<BaseLayout title={lang === 'zh' ? "成长记录 | Jim's Blog" : "Milestone Timeline | Jim's Blog"}>
+  <PageHeader />
+
+  <section class="py-12 space-y-12">
+    <!-- Header -->
+    <div class="space-y-4 border-b border-border-custom/50 pb-8">
+      <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-text-primary">
+        {lang === 'zh' ? '成长足迹 & 纪事' : 'Timeline & Chronicles'}
+      </h1>
+      <p class="text-sm md:text-base text-text-secondary leading-relaxed max-w-3xl">
+        {lang === 'zh' 
+          ? '个人学习记录、大事记与发布足迹。在这虚空之中留下成长的物理印记。' 
+          : 'Milestones, study logs, projects released, and travel coordinates.'}
+      </p>
+    </div>
+
+    <!-- Timeline graph -->
+    <div class="relative max-w-2xl mx-auto ml-4 md:ml-auto">
+      <div class="absolute left-4 top-2 bottom-2 w-0.5 bg-border-custom/80 pointer-events-none"></div>
+
+      <div class="space-y-10">
+        {sortedMilestones.map((mile) => (
+          <div class="relative pl-10 group">
+            <span class="absolute left-[10px] top-1.5 w-3.5 h-3.5 rounded-full border-2 border-primary bg-bg-main group-hover:bg-primary transition-all duration-300 shadow shadow-primary/30"></span>
+
+            <div class="p-6 rounded-lg border border-border-custom bg-bg-surface hover:border-primary/40 transition-colors space-y-3">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <time class="text-xs font-mono font-bold text-primary tracking-widest">{mile.data.date}</time>
+                {mile.data.category && (
+                  <span class={`px-2 py-0.5 text-[9px] font-mono font-bold uppercase rounded border ${categoryColors[mile.data.category] || categoryColors.code}`}>
+                    {mile.data.category}
+                  </span>
+                )}
+              </div>
+
+              <h3 class="text-base font-bold text-text-primary group-hover:text-primary transition-colors duration-300">
+                {mile.data.title}
+              </h3>
+
+              {mile.data.description && (
+                <p class="text-xs md:text-sm text-text-secondary leading-relaxed">
+                  {mile.data.description}
+                </p>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

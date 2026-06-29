@@ -1,0 +1,130 @@
+---
+const navItems = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/notes', label: 'Notes' },
+  { href: '/timeline', label: 'Timeline' },
+  { href: '/anime', label: 'Anime' },
+  { href: '/gallery', label: 'Gallery' },
+  { href: '/lab', label: 'Lab' },
+];
+---
+
+<header class="sticky top-0 z-50 w-full border-b border-border-custom bg-bg-surface/80 backdrop-blur-md transition-all duration-300">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-8">
+    <!-- Logo/Brand -->
+    <a href="/" class="group flex items-center space-x-2 text-xl font-bold tracking-tight text-primary">
+      <span class="inline-block transition-transform duration-300 group-hover:rotate-12">🔮</span>
+      <span class="font-mono text-text-primary group-hover:text-primary transition-colors duration-300">Roxy.dev</span>
+    </a>
+
+    <!-- Desktop Navigation -->
+    <nav class="hidden lg:flex items-center space-x-1">
+      {navItems.map(item => (
+        <a 
+          href={item.href} 
+          class="px-3 py-1.5 text-sm font-medium text-text-secondary hover:text-primary hover:bg-bg-main/50 rounded-md transition-all duration-200"
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="flex items-center space-x-4">
+      <!-- Theme Toggle Button -->
+      <button 
+        id="theme-toggle" 
+        class="relative p-2 text-text-secondary hover:text-primary bg-bg-main/40 border border-border-custom rounded-lg transition-colors duration-200"
+        aria-label="Toggle theme"
+      >
+        <span class="sr-only">Toggle theme</span>
+        <!-- Sun icon -->
+        <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" />
+        </svg>
+        <!-- Moon icon -->
+        <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+        </svg>
+      </button>
+
+      <!-- Mobile Menu Toggle -->
+      <button 
+        id="mobile-menu-toggle" 
+        class="lg:hidden p-2 text-text-secondary hover:text-primary bg-bg-main/40 border border-border-custom rounded-lg transition-colors duration-200"
+        aria-label="Toggle menu"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Navigation Panel -->
+  <div id="mobile-menu" class="hidden border-t border-border-custom bg-bg-surface lg:hidden">
+    <nav class="flex flex-col px-4 py-3 space-y-1">
+      {navItems.map(item => (
+        <a 
+          href={item.href} 
+          class="px-3 py-2 text-sm font-medium text-text-secondary hover:text-primary hover:bg-bg-main/50 rounded-md transition-all duration-200"
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>
+
+<script>
+  function setupTheme() {
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (!themeToggleBtn) return;
+
+    // Set icon state based on local storage or system preference
+    if (
+      localStorage.getItem('color-theme') === 'light' ||
+      (!('color-theme' in localStorage) && !window.matchMedia('(prefers-color-scheme: dark)').matches)
+    ) {
+      document.documentElement.classList.add('light');
+      themeToggleDarkIcon?.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.remove('light');
+      themeToggleLightIcon?.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+      // Toggle icons
+      themeToggleDarkIcon?.classList.toggle('hidden');
+      themeToggleLightIcon?.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('light')) {
+        document.documentElement.classList.remove('light');
+        localStorage.setItem('color-theme', 'dark');
+      } else {
+        document.documentElement.classList.add('light');
+        localStorage.setItem('color-theme', 'light');
+      }
+    });
+
+    // Mobile menu toggle
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    mobileMenuToggle?.addEventListener('click', () => {
+      mobileMenu?.classList.toggle('hidden');
+    });
+  }
+
+  // Run on page load
+  setupTheme();
+
+  // Run again after view transition navigations
+  document.addEventListener('astro:after-swap', setupTheme);
+</script>

@@ -1,0 +1,9 @@
+{
+  "name": "HUD Terminal Component",
+  "description": "一个轻量级的打字机终端卡片组件，基于原生 Web Component 标准实现，无外部依赖。",
+  "techStack": ["HTML5", "CSS3", "JavaScript"],
+  "github": "https://github.com/example/hud-terminal",
+  "featured": false,
+  "order": 2,
+  "lang": "zh"
+}

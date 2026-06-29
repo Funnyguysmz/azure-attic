@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://roxy.dev/sitemap-index.xml

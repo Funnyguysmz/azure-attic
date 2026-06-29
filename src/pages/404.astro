@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { useTranslations } from '../utils/i18n';
+
+const pathname = Astro.url.pathname;
+const t = useTranslations(pathname);
+---
+
+<BaseLayout title={`404: Void | Jim's Blog`}>
+  <section class="flex flex-col items-center justify-center text-center py-20 md:py-32 space-y-8">
+    <!-- 404 Magic Graphics -->
+    <div class="relative">
+      <h1 class="text-7xl md:text-9xl font-black font-mono tracking-tight text-primary/10 select-none">
+        404
+      </h1>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="w-24 h-24 md:w-36 md:h-36 rounded-full border border-dashed border-primary/40 animate-spin [animation-duration:12s] flex items-center justify-center">
+          <div class="w-16 h-16 md:w-24 md:h-24 rounded-full border border-dotted border-accent/30 animate-pulse"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Text content -->
+    <div class="space-y-3 max-w-md">
+      <h2 class="text-xl md:text-2xl font-bold text-text-primary">
+        {t('404.lost')}
+      </h2>
+      <p class="text-xs md:text-sm text-text-secondary leading-relaxed">
+        {t('404.void')}
+      </p>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex items-center space-x-4">
+      <a 
+        href={pathname.startsWith('/en') ? '/en' : '/'} 
+        class="px-5 py-2.5 text-xs font-mono font-semibold text-bg-main bg-primary hover:bg-primary/90 border border-primary/20 rounded-lg transition-all duration-300"
+      >
+        {t('404.back')}
+      </a>
+      <button 
+        onclick="history.back()"
+        class="px-5 py-2.5 text-xs font-mono font-semibold text-text-secondary hover:text-text-primary bg-bg-surface hover:bg-bg-surface/50 border border-border-custom hover:border-primary/50 rounded-lg transition-all duration-300 cursor-pointer"
+      >
+        history -b (go back)
+      </button>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,102 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../PageHeader.astro';
+
+interface Props {
+  lang: 'zh' | 'en';
+}
+
+const { lang } = Astro.props;
+---
+
+<BaseLayout title={lang === 'zh' ? "关于我 | Jim's Blog" : "About Me | Jim's Blog"}>
+  <PageHeader />
+
+  <section class="py-12 space-y-16">
+    <!-- Header -->
+    <div class="space-y-4 border-b border-border-custom/50 pb-8">
+      <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-text-primary">
+        {lang === 'zh' ? '关于我 & 博客' : 'About Me & The Garden'}
+      </h1>
+      <p class="text-sm md:text-base text-text-secondary leading-relaxed max-w-3xl">
+        {lang === 'zh' 
+          ? '专注于软件开发、视觉设计与技术探索的个人空间。' 
+          : 'A coordinate in space-time dedicated to software engineering, visual experiments, and personal cataloging.'}
+      </p>
+    </div>
+
+    <!-- Biography & Character Decoration -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start">
+      <div class="md:col-span-8 space-y-6 text-sm text-text-secondary leading-relaxed">
+        <h2 class="text-xl font-semibold text-text-primary font-mono">whoami</h2>
+        {lang === 'zh' ? (
+          <>
+            <p>
+              我是 <strong>Jim</strong>，一名热爱技术与二次元的开发者。专注于构建可靠的前端架构、编写高性能 API，并探索 Serverless 生态。我深信写代码和吟唱魔法有异曲同工之妙：皆需要严谨的逻辑、清晰的公式，以及一点点创造力。
+            </p>
+            <p>
+              本站的视觉风格深受<strong>极客简约美学</strong>影响：我偏爱高秩序感的界面、干净的排版和柔和冷调的颜色。
+            </p>
+            <p>
+              工作之余，我是个追番党、音乐爱好者，也喜欢到处走走。这个“数字花园”是我个人的公开笔记本，在这里你可以看到我对技术的探索、随笔心得以及追番日志的交汇。
+            </p>
+          </>
+        ) : (
+          <>
+            <p>
+              I am <strong>Jim</strong>, a developer who loves technology and anime. I focus on building reliable frontend architectures, writing performant APIs, and exploring serverless ecosystems. I believe that writing code is like casting magic spells: it requires precision, clear formulas, and a bit of creativity.
+            </p>
+            <p>
+              My work is heavily guided by <strong>minimalist geek aesthetics</strong>: I prefer high visual structure, strict design grids, and typography that flows naturally.
+            </p>
+            <p>
+              Outside of software engineering, I am an anime fan, music enthusiast, and traveler. This digital garden serves as a public notebook where my thoughts on technology, notes on life, and hobby catalogs collide.
+            </p>
+          </>
+        )}
+        
+        <h3 class="text-base font-semibold text-text-primary pt-4 font-mono">{lang === 'zh' ? '博客原则' : 'Core Ideology'}</h3>
+        <ul class="list-disc pl-4 space-y-2 text-xs">
+          <li><strong>{lang === 'zh' ? '静态优先' : 'SSG / Static First'}</strong>: {lang === 'zh' ? '在可以用 Markdown 和 CDN 50毫秒送达页面时，绝不滥用数据库。' : 'Why use a database when Markdown and global CDNs can serve pages in 50ms?'}</li>
+          <li><strong>{lang === 'zh' ? '无服务器化' : 'No VPS Overkill'}</strong>: {lang === 'zh' ? 'Serverless 足够强大，在基础层完全免费，且零运维成本。' : 'Serverless resources are incredibly powerful, free at basic tiers, and require zero OS security updates.'}</li>
+          <li><strong>{lang === 'zh' ? '舒适视觉' : 'Aesthetic Comfort'}</strong>: {lang === 'zh' ? '低对比度、洛琪希冷蓝色调和长期阅读的舒适感是首要考量。' : 'Soft contrast, cool blue hues, and long-term readability are essential for healthy screen time.'}</li>
+        </ul>
+      </div>
+
+      <!-- Character Decorative panel -->
+      <div class="md:col-span-4 rounded-xl border border-border-custom bg-bg-surface p-6 space-y-6 relative overflow-hidden">
+        <div class="absolute -right-12 -bottom-12 w-40 h-40 opacity-5 border border-primary rounded-full"></div>
+        <div class="absolute -right-8 -bottom-8 w-32 h-32 opacity-5 border border-primary rounded-full"></div>
+
+        <div class="flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-full border border-primary bg-primary/10 flex items-center justify-center text-xl">
+            🔮
+          </div>
+          <div>
+            <h3 class="text-sm font-semibold text-text-primary">Traveler Jim</h3>
+            <span class="text-[10px] font-mono text-accent">Active Explorer</span>
+          </div>
+        </div>
+
+        <div class="space-y-3 text-xs border-t border-border-custom/50 pt-4">
+          <div class="flex justify-between">
+            <span class="text-text-secondary font-mono">Affiliation</span>
+            <span class="text-text-primary">Independent Lab</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-text-secondary font-mono">Specialization</span>
+            <span class="text-text-primary">Astro, TypeScript</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-text-secondary font-mono">Current Quest</span>
+            <span class="text-text-primary">Refining i18n Space</span>
+          </div>
+        </div>
+
+        <p class="text-[10px] text-text-secondary italic leading-relaxed bg-bg-main/50 p-3 rounded border border-border-custom/50">
+          "The road is long, but a quiet traveler keeps moving forward."
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

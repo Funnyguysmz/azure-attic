@@ -1,0 +1,97 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../PageHeader.astro';
+
+interface Props {
+  lang: 'zh' | 'en';
+}
+
+const { lang } = Astro.props;
+
+const projects = await getCollection('projects');
+const sortedProjects = projects.sort(
+  (a, b) => (a.data.order ?? 99) - (b.data.order ?? 99)
+);
+---
+
+<BaseLayout title={lang === 'zh' ? "项目展示 | Jim's Blog" : "Projects Showcase | Jim's Blog"}>
+  <PageHeader />
+
+  <section class="py-12 space-y-12">
+    <!-- Header -->
+    <div class="space-y-4 border-b border-border-custom/50 pb-8">
+      <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-text-primary">
+        {lang === 'zh' ? '项目与作品' : 'Projects & Sidequests'}
+      </h1>
+      <p class="text-sm md:text-base text-text-secondary leading-relaxed max-w-3xl">
+        {lang === 'zh' 
+          ? '个人开发的侧边项目、工具库及一些开源实验。大多采用 Serverless 架构并全量开源。' 
+          : 'Side projects, repositories, libraries, and custom widgets. Most are hosted serverless and open-sourced.'}
+      </p>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {sortedProjects.map(proj => (
+        <div class="group relative flex flex-col justify-between p-6 rounded-lg border border-border-custom bg-bg-surface hover:border-primary/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5">
+          <div class="space-y-4">
+            <div class="flex items-start justify-between">
+              <div class="w-8 h-8 rounded bg-primary/10 border border-primary/20 flex items-center justify-center text-sm font-mono text-primary font-semibold select-none">
+                {proj.data.name.charAt(0)}
+              </div>
+              {proj.data.featured && (
+                <span class="px-2 py-0.5 text-[9px] font-mono text-accent bg-accent/10 border border-accent/20 rounded-full font-bold uppercase">
+                  ★ Featured
+                </span>
+              )}
+            </div>
+
+            <h2 class="text-base font-bold text-text-primary group-hover:text-primary transition-colors">
+              {proj.data.name}
+            </h2>
+            
+            <p class="text-xs text-text-secondary leading-relaxed line-clamp-3">
+              {proj.data.description}
+            </p>
+          </div>
+
+          <div class="space-y-4 pt-6">
+            <!-- Tech stack -->
+            <div class="flex flex-wrap gap-1">
+              {proj.data.techStack.map(tech => (
+                <span class="px-1.5 py-0.5 rounded text-[10px] font-mono border border-border-custom bg-bg-main/50 text-text-secondary">
+                  {tech}
+                </span>
+              ))}
+            </div>
+
+            <!-- Links -->
+            <div class="flex items-center space-x-4 text-xs font-mono border-t border-border-custom/50 pt-4">
+              {proj.data.github && (
+                <a 
+                  href={proj.data.github} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  class="text-text-secondary hover:text-primary transition-colors"
+                >
+                  Source
+                </a>
+              )}
+              {proj.data.demo && (
+                <a 
+                  href={proj.data.demo} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  class="text-text-secondary hover:text-primary transition-colors"
+                >
+                  Demo &rarr;
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
