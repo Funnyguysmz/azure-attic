@@ -1,0 +1,37 @@
+---
+import { getCollection, render } from 'astro:content';
+import PostLayout from '../../layouts/PostLayout.astro';
+import Callout from '../../components/mdx/Callout.astro';
+import Tabs from '../../components/mdx/Tabs.astro';
+import TabItem from '../../components/mdx/TabItem.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('study');
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+---
+
+<PostLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  pubDate={entry.data.pubDate}
+  tags={entry.data.tags}
+  headings={headings}
+  body={entry.body || ''}
+>
+  <div class="mb-6 flex flex-wrap items-center gap-2">
+    <a href="/study" class="rounded border border-border-custom bg-bg-surface px-2 py-1 text-[10px] font-mono text-text-secondary hover:text-primary">
+      &larr; 学习资料
+    </a>
+    <span class="rounded border border-primary/20 bg-primary/10 px-2 py-1 text-[10px] font-mono text-primary">
+      优先级：{entry.data.priority}
+    </span>
+  </div>
+  <Content components={{ Callout, Tabs, TabItem }} />
+</PostLayout>

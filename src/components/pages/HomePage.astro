@@ -15,21 +15,24 @@ const t = useTranslations(lang === 'en' ? '/en' : '/');
 
 // Fetch collections
 const posts = await getCollection('blog');
+const studyEntries = await getCollection('study');
 const projects = await getCollection('projects');
 
 // Filter posts
 const filteredPosts = posts
+  .filter((post) => lang === 'en' ? post.id.startsWith('en/') : !post.id.startsWith('en/'))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 3);
 
 // Calculate stats
-const articlesCount = posts.length;
+const articlesCount = posts.filter((post) => lang === 'en' ? post.id.startsWith('en/') : !post.id.startsWith('en/')).length;
 const projectsCount = projects.length;
 const tagsCount = [...new Set(posts.flatMap(p => p.data.tags))].length;
 
 // Static placeholders for mockup illustrations
-import travelerWallImg from '../../assets/images/traveler_wall.jpg';
-import magicCircleImg from '../../assets/images/magic_circle.jpg';
+import roxyHeroImg from '../../assets/images/roxy-hero.png';
+import studyDeskImg from '../../assets/images/mage-study-desk.png';
+import designBlueprintImg from '../../assets/images/blog-design-blueprint.png';
 ---
 
 <BaseLayout title={lang === 'zh' ? "首页 | Jim's Blog" : "Home | Jim's Blog"}>
@@ -58,12 +61,19 @@ import magicCircleImg from '../../assets/images/magic_circle.jpg';
       </div>
 
       <!-- Quick Action Buttons -->
-      <div class="pt-2">
+      <div class="flex flex-wrap items-center gap-4 pt-2">
         <a 
           href={lang === 'en' ? '/en/blog' : '/blog'} 
           class="inline-flex items-center space-x-2 text-xs font-mono font-bold text-primary hover:text-accent hover:translate-x-1 transition-all duration-300"
         >
           <span>{t('hero.explore')}</span>
+          <span>&rarr;</span>
+        </a>
+        <a 
+          href="/study" 
+          class="inline-flex items-center space-x-2 text-xs font-mono font-bold text-text-secondary hover:text-primary hover:translate-x-1 transition-all duration-300"
+        >
+          <span>学习资料 Study</span>
           <span>&rarr;</span>
         </a>
       </div>
@@ -77,8 +87,8 @@ import magicCircleImg from '../../assets/images/magic_circle.jpg';
       <!-- Illustration frame -->
       <div class="relative w-[320px] aspect-[4/5] rounded-xl border border-border-custom bg-bg-surface overflow-hidden shadow-2xl z-10 transition-transform duration-500 hover:scale-[1.01]">
         <Image 
-          src={travelerWallImg}
-          alt="Traveler Mage"
+          src={roxyHeroImg}
+          alt="Roxy mage hero illustration"
           class="w-full h-full object-cover opacity-90 transition-opacity duration-300 hover:opacity-100"
           loading="eager"
         />
@@ -115,7 +125,7 @@ import magicCircleImg from '../../assets/images/magic_circle.jpg';
     <!-- Horizontal card layouts matching mockup -->
     <div class="grid grid-cols-1 gap-4">
       {filteredPosts.map((post, idx) => {
-        const cover = idx % 2 === 0 ? travelerWallImg : magicCircleImg;
+        const cover = idx % 2 === 0 ? studyDeskImg : designBlueprintImg;
         return (
           <a 
             href={lang === 'en' ? `/en/blog/${post.id}` : `/blog/${post.id}`}
@@ -192,8 +202,8 @@ import magicCircleImg from '../../assets/images/magic_circle.jpg';
         <span class="text-[8px] text-text-secondary font-mono tracking-wider uppercase block mt-1">{t('stats.tags')}</span>
       </div>
       <div class="p-3 rounded-lg border border-border-custom bg-bg-surface/50">
-        <span class="block text-lg md:text-xl font-black text-primary font-mono">&infin;</span>
-        <span class="text-[8px] text-text-secondary font-mono tracking-wider uppercase block mt-1">{t('stats.days')}</span>
+        <span class="block text-lg md:text-xl font-black text-primary font-mono">{studyEntries.length}</span>
+        <span class="text-[8px] text-text-secondary font-mono tracking-wider uppercase block mt-1">STUDY</span>
       </div>
     </div>
   </section>

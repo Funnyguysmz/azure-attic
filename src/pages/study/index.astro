@@ -1,0 +1,108 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+
+const entries = (await getCollection('study')).sort((a, b) => a.data.order - b.data.order);
+const coreEntries = entries.filter((entry) => entry.data.order > 0 && entry.data.order < 90);
+const supportEntries = entries.filter((entry) => entry.data.order === 0 || entry.data.order >= 90);
+
+const priorityClass = (priority: string) => {
+  if (priority === '最高') return 'text-red-300 bg-red-500/10 border-red-400/20';
+  if (priority === '高') return 'text-amber-200 bg-amber-400/10 border-amber-300/20';
+  return 'text-emerald-200 bg-emerald-400/10 border-emerald-300/20';
+};
+---
+
+<BaseLayout title="Android 面试学习资料 | Jim's Blog" description="按面试风险排序的 Android 学习资料、失分题复盘、复习卡片与配图手册。">
+  <PageHeader />
+
+  <section class="py-10 space-y-10">
+    <header class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end border-b border-border-custom/50 pb-8">
+      <div class="lg:col-span-8 space-y-4">
+        <p class="text-xs font-mono text-primary tracking-wider">/ STUDY SYSTEM</p>
+        <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight text-text-primary">
+          Android 面试学习资料
+        </h1>
+        <p class="max-w-3xl text-sm md:text-base leading-relaxed text-text-secondary">
+          从真实面试失分点反推的学习单元。每篇资料都按「核心原理、桥接话术、高频追问、知识缺口」组织，适合集中补齐 Android Framework、性能、Jetpack 与架构表达。
+        </p>
+      </div>
+
+      <div class="lg:col-span-4 grid grid-cols-3 gap-3 text-center">
+        <div class="rounded-lg border border-border-custom bg-bg-surface p-3">
+          <span class="block text-xl font-black font-mono text-primary">{coreEntries.length}</span>
+          <span class="text-[9px] font-mono text-text-secondary">核心单元</span>
+        </div>
+        <div class="rounded-lg border border-border-custom bg-bg-surface p-3">
+          <span class="block text-xl font-black font-mono text-primary">{supportEntries.length}</span>
+          <span class="text-[9px] font-mono text-text-secondary">辅助资料</span>
+        </div>
+        <div class="rounded-lg border border-border-custom bg-bg-surface p-3">
+          <span class="block text-xl font-black font-mono text-primary">11</span>
+          <span class="text-[9px] font-mono text-text-secondary">配图</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="space-y-5">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-bold text-text-primary tracking-wider font-mono">
+          <span class="text-primary">/</span> 学习顺序
+        </h2>
+        <a href="/study/高频失分题汇总/" class="text-[10px] font-mono text-text-secondary hover:text-primary">
+          高频失分题 &rarr;
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {coreEntries.map((entry) => (
+          <a
+            href={`/study/${entry.id}/`}
+            class="group rounded-lg border border-border-custom bg-bg-surface p-5 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5"
+          >
+            <div class="flex items-start justify-between gap-4">
+              <span class="text-xs font-mono text-text-secondary">#{String(entry.data.order).padStart(2, '0')}</span>
+              <span class={`rounded border px-2 py-0.5 text-[10px] font-mono ${priorityClass(entry.data.priority)}`}>
+                {entry.data.priority}
+              </span>
+            </div>
+            <h3 class="mt-4 text-base font-bold text-text-primary transition-colors group-hover:text-primary">
+              {entry.data.title}
+            </h3>
+            <p class="mt-2 line-clamp-2 text-xs leading-relaxed text-text-secondary">
+              {entry.data.description}
+            </p>
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              {entry.data.tags.slice(0, 4).map((tag) => (
+                <span class="rounded border border-border-custom bg-bg-main px-1.5 py-0.5 text-[9px] font-mono text-text-secondary">
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="space-y-5 border-t border-border-custom/50 pt-8">
+      <h2 class="text-sm font-bold text-text-primary tracking-wider font-mono">
+        <span class="text-primary">/</span> 复盘与素材
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {supportEntries.map((entry) => (
+          <a
+            href={`/study/${entry.id}/`}
+            class="rounded-lg border border-border-custom bg-bg-surface/70 p-4 transition-all hover:border-primary/40"
+          >
+            <div class="flex items-center justify-between gap-3">
+              <h3 class="text-sm font-bold text-text-primary">{entry.data.title}</h3>
+              <span class="text-[10px] font-mono text-primary">{entry.data.category}</span>
+            </div>
+            <p class="mt-2 line-clamp-2 text-xs leading-relaxed text-text-secondary">{entry.data.description}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+  </section>
+</BaseLayout>

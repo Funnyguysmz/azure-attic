@@ -38,6 +38,20 @@ const notesCollection = defineCollection({
   }),
 });
 
+const studyCollection = defineCollection({
+  loader: glob({ pattern: '**/[^_]*.md', base: "./src/content/study" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    pubDate: z.coerce.date(),
+    order: z.number().optional().default(99),
+    priority: z.string().optional().default('中'),
+    category: z.string().optional().default('misc'),
+    tags: z.array(z.string()).optional().default([]),
+    lang: z.enum(['zh', 'en']).optional().default('zh'),
+  }),
+});
+
 const animeCollection = defineCollection({
   loader: glob({ pattern: '**/[^_]*.json', base: "./src/content/anime" }),
   schema: z.object({
@@ -67,6 +81,7 @@ export const collections = {
   'blog': blogCollection,
   'projects': projectsCollection,
   'notes': notesCollection,
+  'study': studyCollection,
   'anime': animeCollection,
   'timeline': timelineCollection,
 };

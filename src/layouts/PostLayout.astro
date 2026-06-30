@@ -110,8 +110,58 @@ const formattedDate = new Date(pubDate).toLocaleDateString('en-US', {
     margin-bottom: 1.25em;
     list-style-type: disc;
   }
+  .prose ol {
+    list-style-type: decimal;
+  }
   .prose li {
     margin-bottom: 0.5em;
+  }
+  .prose li:has(input[type="checkbox"]) {
+    list-style: none;
+    margin-left: -1.5em;
+  }
+  .prose input[type="checkbox"] {
+    width: 0.9rem;
+    height: 0.9rem;
+    margin-right: 0.45rem;
+    accent-color: var(--color-primary);
+  }
+  .prose table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    font-size: 0.86em;
+  }
+  .prose thead {
+    background: color-mix(in srgb, var(--color-primary) 10%, var(--bg-surface));
+  }
+  .prose th,
+  .prose td {
+    border: 1px solid var(--border-color);
+    padding: 0.65rem 0.8rem;
+    text-align: left;
+    vertical-align: top;
+    white-space: nowrap;
+  }
+  .prose th {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+  .prose img {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-surface);
+    margin: 1.5rem 0;
+  }
+  .prose hr {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    margin: 2rem 0;
   }
   .prose code {
     background-color: var(--code-bg);
